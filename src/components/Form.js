@@ -35,6 +35,7 @@ const Form = () => {
     glutenFree: yup.bool(),
     size: yup.string().required(),
     selectedSauce: yup.string(),
+    "special-instructions": yup.string(),
   });
 
   const validateInput = (e) => {

@@ -3,6 +3,7 @@ import { Route, NavLink } from "react-router-dom";
 
 import Home from "./components/Home";
 import Form from "./components/Form";
+import Success from "./components/Success";
 
 import "./App.css";
 
@@ -18,6 +19,9 @@ const App = () => {
       </Route>
       <Route path="/pizza">
         <Form />
+      </Route>
+      <Route path="/success">
+        <Success />
       </Route>
     </>
   );

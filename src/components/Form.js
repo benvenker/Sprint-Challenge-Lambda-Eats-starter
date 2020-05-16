@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import "./Toggle.css";
+import "./Form.css";
 import Toggle from "react-toggle";
 import * as yup from "yup";
 import axios from "axios";
 
 const Form = () => {
+  const history = useHistory();
+
   const initialState = {
     name: "",
     size: "medium",
@@ -13,6 +18,7 @@ const Form = () => {
     "canadian-bacon": "",
     pepperoni: "",
     sausage: "",
+    selectedSauce: "original-red",
   };
 
   const [errors, setErrors] = useState(initialState);
@@ -21,10 +27,19 @@ const Form = () => {
   const [post, setPost] = useState([]);
 
   const schema = yup.object().shape({
-    name: yup.string().required("Name must be at least two characters long."),
+    name: yup
+      .string()
+      .test(
+        "len",
+        "Name must be at least two characters long.",
+        (val) => val.length >= 2
+      ),
     "canadian-bacon": yup.bool(),
     pepperoni: yup.bool(),
     sausage: yup.bool(),
+    glutenFree: yup.bool(),
+    size: yup.string().required(),
+    selectedSauce: yup.string(),
   });
 
   const validateInput = (e) => {
@@ -56,12 +71,19 @@ const Form = () => {
     setFormState(newFormState);
   };
 
+  const handleRadioChange = (e) => {
+    e.persist();
+    console.log("cliked", e.target.value);
+    setFormState({ ...formState, selectedSauce: e.target.value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
       .post("https://reqres.in/api/users", formState)
       .then((response) => setPost([response.data]))
       .then(setFormState(initialState))
+      // .then(history.push("/success"))
       .catch((err) => console.log(err.respose));
   };
 
@@ -84,8 +106,10 @@ const Form = () => {
           ) : null}
         </label>
         <label htmlFor="size" name="size" id="size">
-          <h2>Choice of Size</h2>
-          <p>Required</p>
+          <div className="section-header">
+            <h2>Choice of Size</h2>
+            <p>Required</p>
+          </div>
           <select
             name="size"
             id="size"
@@ -98,14 +122,16 @@ const Form = () => {
             <option value="extra large">Extra Large</option>
           </select>
         </label>
-        <h2>Choice of Sauce</h2>
-        <p>Required</p>
+        <div className="section-header">
+          <h2>Choice of Sauce</h2>
+          <p>Required</p>
+        </div>
         <label htmlFor="original-red" name="original-red" id="original-red">
           <input
             type="radio"
             name="original-red"
-            checked={true}
-            onChange={handleChange}
+            checked={formState.selectedSauce === "original-red"}
+            onChange={handleRadioChange}
           />
           Original Red
         </label>
@@ -114,7 +140,8 @@ const Form = () => {
             type="radio"
             name="garlic-ranch"
             value="garlic-ranch"
-            onChange={handleChange}
+            checked={formState.selectedSauce === "garlic-ranch"}
+            onChange={handleRadioChange}
           />
           Garlice Ranch
         </label>
@@ -123,7 +150,8 @@ const Form = () => {
             type="radio"
             name="bbq-sauce"
             value="bbq-sauce"
-            onChange={handleChange}
+            checked={formState.selectedSauce === "bbq-sauce"}
+            onChange={handleRadioChange}
           />
           BBQ Sauce
         </label>
@@ -135,13 +163,16 @@ const Form = () => {
           <input
             type="radio"
             name="spinach-alfredo"
-            valeu="spinach-alfredo"
-            onChange={handleChange}
+            value="spinach-alfredo"
+            checked={formState.selectedSauce === "spinach-alfredo"}
+            onChange={handleRadioChange}
           />
           Spinach Alfredo
         </label>
-        <h2>Add Toppings</h2>
-        <p>Choose up to n</p>
+        <div className="section-header">
+          <h2>Add Toppings</h2>
+          <p>Choose up to n</p>
+        </div>
         <label htmlFor="pepperoni">
           <input
             type="checkbox"
@@ -190,7 +221,9 @@ const Form = () => {
           />
           Chicken
         </label>
-        <h2>Choice of Substitute</h2>
+        <div className="section-header">
+          <h2>Choice of Substitute</h2>
+        </div>
         <label htmlFor="glutenFree">
           <Toggle
             name="glutenFree"

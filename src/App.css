@@ -1,32 +1,14 @@
 .App {
   text-align: center;
+  margin: 10px;
 }
 
-.error {
-  color: red;
-}
-input,
-label {
-  display: block;
-}
-
-input,
-select,
-textarea {
-  border: 1px solid lightgray;
-}
-
-input[type="radio"],
-input[type="checkbox"] {
-  display: inline-block;
-}
-
-button {
-  padding: 10px;
-  border: 1px solid gray;
-  background-color: blue;
-  color: white;
-  margin-bottom: 10px;
+nav {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 20px;
+  /* border-bottom: 1px solid gray; */
+  box-shadow: 5px 5px 5px rgb(242, 242, 242);
 }
 
 .App-logo {

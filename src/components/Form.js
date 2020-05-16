@@ -16,8 +16,8 @@ const Form = () => {
     sauce: "original-red",
     glutenFree: false,
     "canadian-bacon": "",
-    pepperoni: "",
-    sausage: "",
+    pepperoni: false,
+    sausage: false,
     selectedSauce: "original-red",
   };
 
@@ -37,6 +37,8 @@ const Form = () => {
     "canadian-bacon": yup.bool(),
     pepperoni: yup.bool(),
     sausage: yup.bool(),
+    "spicy-italian-sausage": yup.bool(),
+    chicken: yup.bool(),
     glutenFree: yup.bool(),
     size: yup.string().required(),
     selectedSauce: yup.string(),

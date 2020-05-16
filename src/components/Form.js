@@ -9,18 +9,15 @@ import axios from "axios";
 
 const Form = () => {
   const history = useHistory();
-
+  const [toppings, setToppings] = useState([]);
   const initialState = {
     name: "",
     size: "medium",
     sauce: "original-red",
     glutenFree: false,
-    "canadian-bacon": "",
-    pepperoni: false,
-    sausage: false,
+    toppings: toppings,
     selectedSauce: "original-red",
   };
-
   const [errors, setErrors] = useState(initialState);
   const [formState, setFormState] = useState(initialState);
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -34,11 +31,7 @@ const Form = () => {
         "Name must be at least two characters long.",
         (val) => val.length >= 2
       ),
-    "canadian-bacon": yup.bool(),
-    pepperoni: yup.bool(),
-    sausage: yup.bool(),
-    "spicy-italian-sausage": yup.bool(),
-    chicken: yup.bool(),
+    toppings: yup.array(),
     glutenFree: yup.bool(),
     size: yup.string().required(),
     selectedSauce: yup.string(),
@@ -75,8 +68,17 @@ const Form = () => {
 
   const handleRadioChange = (e) => {
     e.persist();
-    console.log("cliked", e.target.value);
     setFormState({ ...formState, selectedSauce: e.target.value });
+  };
+
+  const handleToppings = (e) => {
+    e.persist();
+    const topping = e.target.name;
+    const allToppings = {
+      toppings: [...toppings, topping],
+    };
+    setToppings([...toppings, topping]);
+    setFormState({ ...formState, ...allToppings });
   };
 
   const handleSubmit = (e) => {
@@ -181,7 +183,7 @@ const Form = () => {
             id="pepperoni"
             name="pepperoni"
             cy-data="pepperoni"
-            onChange={handleChange}
+            onChange={handleToppings}
           />
           Pepperoni
         </label>
@@ -191,7 +193,7 @@ const Form = () => {
             id="sausage"
             name="sausage"
             cy-data="sausage"
-            onChange={handleChange}
+            onChange={handleToppings}
           />
           Sausage
         </label>
@@ -201,7 +203,7 @@ const Form = () => {
             id="canadian-bacon"
             name="canadian-bacon"
             cy-data="canadian-bacon"
-            onChange={handleChange}
+            onChange={handleToppings}
           />
           Canadian Bacon
         </label>
@@ -210,7 +212,7 @@ const Form = () => {
             type="checkbox"
             id="spicy-italian-sausage"
             name="spicy-italian-sausage"
-            onChange={handleChange}
+            onChange={handleToppings}
           />
           Spicy Italian Sausage
         </label>
@@ -219,7 +221,7 @@ const Form = () => {
             type="checkbox"
             id="grilled-chicken"
             name="grilled-chicken"
-            onChange={handleChange}
+            onChange={handleToppings}
           />
           Chicken
         </label>

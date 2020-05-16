@@ -2,17 +2,20 @@ import React, { useEffect, useState } from "react";
 import "./Toggle.css";
 import Toggle from "react-toggle";
 import * as yup from "yup";
+import axios from "axios";
 
 const Form = () => {
   const initialState = {
     name: "",
     size: "medium",
+    sauce: "original-red",
     glutenFree: false,
   };
 
   const [errors, setErrors] = useState(initialState);
   const [formState, setFormState] = useState(initialState);
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [post, setPost] = useState([]);
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is a required field"),
@@ -26,7 +29,7 @@ const Form = () => {
         setErrors({ ...errors, [e.target.name]: "" });
       })
       .catch((err) => {
-        setErrors({ ...errors, [e.target.nname]: err.errors[0] });
+        setErrors({ ...errors, [e.target.name]: err.errors[0] });
       });
   };
 
@@ -43,9 +46,18 @@ const Form = () => {
       [e.target.name]:
         e.target.type === "checkbox" ? e.target.checked : e.target.value,
     };
-    return setFormState(newFormState);
+    validateInput(e);
+    setFormState(newFormState);
   };
-  const handleSubmit = () => {};
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("https://reqres.in/api/users", formState)
+      .then((response) => setPost([response.data]))
+      .then(setFormState(initialState))
+      .catch((err) => console.log(err.respose));
+  };
 
   return (
     <div className="form-container">
@@ -187,10 +199,19 @@ const Form = () => {
           onChange={handleChange}
         ></textarea>
         <div className="quantity">
-          <input type="number" onChange={handleChange} />
+          <input
+            type="number"
+            name="quantity"
+            id="quantity"
+            onChange={handleChange}
+          />
         </div>
         <button>PLace Your Order</button>
       </form>
+      {
+        // console.log("post.length: ", post.length)
+        post ? <pre>{JSON.stringify(post, null, 2)}</pre> : null
+      }
     </div>
   );
 };

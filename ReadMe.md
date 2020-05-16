@@ -47,11 +47,11 @@ Your MVP should include, at a minimum, the following components.
 - [x] A homepage that has a "/" route and links to your form (button, nav bar, or any other type of link is acceptable)
 - [x] A form with a "/pizza" route
 - [x] A name text input field
-- [ ] Validation for name - name must be at least 2 characters
+- [x] Validation for name - name must be at least 2 characters
 - [x] Dropdown form component for pizza size
 - [x] Checklist form component for toppings - at least 4 (hint: name each separately!)
 - [x] Text input form component for special instructions
-- [ ] An Add to Order button that submits form and returns a database record of name, pizza size, sauce, and special instructions
+- [x] An Add to Order button that submits form and returns a database record of name, pizza size, sauce, and special instructions
 
 #### Testing MVP
 

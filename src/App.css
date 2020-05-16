@@ -2,6 +2,9 @@
   text-align: center;
 }
 
+.errors {
+  color: red;
+}
 input,
 label {
   display: block;
@@ -16,6 +19,14 @@ textarea {
 input[type="radio"],
 input[type="checkbox"] {
   display: inline-block;
+}
+
+button {
+  padding: 10px;
+  border: 1px solid gray;
+  background-color: blue;
+  color: white;
+  margin-bottom: 10px;
 }
 
 .App-logo {

@@ -10,11 +10,31 @@ const Form = () => {
     glutenFree: false,
   };
 
+  const [errors, setErrors] = useState(initialState);
   const [formState, setFormState] = useState(initialState);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is a required field"),
   });
+
+  const validateInput = (e) => {
+    yup
+      .reach(schema, e.target.name)
+      .validate(e.target.value)
+      .then((valid) => {
+        setErrors({ ...errors, [e.target.name]: "" });
+      })
+      .catch((err) => {
+        setErrors({ ...errors, [e.target.nname]: err.errors[0] });
+      });
+  };
+
+  useEffect(() => {
+    schema.isValid(formState).then((valid) => {
+      setButtonDisabled(valid);
+    });
+  }, [formState]);
 
   const handleChange = (e) => {
     e.persist();
@@ -23,7 +43,7 @@ const Form = () => {
       [e.target.name]:
         e.target.type === "checkbox" ? e.target.checked : e.target.value,
     };
-    return setFormState({ ...formState, [e.target.name]: e.target.value });
+    return setFormState(newFormState);
   };
   const handleSubmit = () => {};
 
@@ -40,6 +60,9 @@ const Form = () => {
             value={formState.name}
             onChange={handleChange}
           />
+          {errors.name.length > 0 ? (
+            <p className="error">{errors.name}</p>
+          ) : null}
         </label>
         <label htmlFor="size" name="size" id="size">
           <h2>Choice of Size</h2>
@@ -166,6 +189,7 @@ const Form = () => {
         <div className="quantity">
           <input type="number" onChange={handleChange} />
         </div>
+        <button>PLace Your Order</button>
       </form>
     </div>
   );

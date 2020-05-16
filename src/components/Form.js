@@ -10,6 +10,9 @@ const Form = () => {
     size: "medium",
     sauce: "original-red",
     glutenFree: false,
+    "canadian-bacon": "",
+    pepperoni: "",
+    sausage: "",
   };
 
   const [errors, setErrors] = useState(initialState);
@@ -18,7 +21,10 @@ const Form = () => {
   const [post, setPost] = useState([]);
 
   const schema = yup.object().shape({
-    name: yup.string().required("Name is a required field"),
+    name: yup.string().required("Name must be at least two characters long."),
+    "canadian-bacon": yup.bool(),
+    pepperoni: yup.bool(),
+    sausage: yup.bool(),
   });
 
   const validateInput = (e) => {
@@ -68,6 +74,7 @@ const Form = () => {
           <input
             type="text"
             id="name"
+            cy-data="name"
             name="name"
             value={formState.name}
             onChange={handleChange}
@@ -106,7 +113,7 @@ const Form = () => {
           <input
             type="radio"
             name="garlic-ranch"
-            checked={false}
+            value="garlic-ranch"
             onChange={handleChange}
           />
           Garlice Ranch
@@ -115,7 +122,7 @@ const Form = () => {
           <input
             type="radio"
             name="bbq-sauce"
-            checked={false}
+            value="bbq-sauce"
             onChange={handleChange}
           />
           BBQ Sauce
@@ -128,7 +135,7 @@ const Form = () => {
           <input
             type="radio"
             name="spinach-alfredo"
-            checked={false}
+            valeu="spinach-alfredo"
             onChange={handleChange}
           />
           Spinach Alfredo
@@ -140,6 +147,7 @@ const Form = () => {
             type="checkbox"
             id="pepperoni"
             name="pepperoni"
+            cy-data="pepperoni"
             onChange={handleChange}
           />
           Pepperoni
@@ -149,6 +157,7 @@ const Form = () => {
             type="checkbox"
             id="sausage"
             name="sausage"
+            cy-data="sausage"
             onChange={handleChange}
           />
           Sausage
@@ -158,6 +167,7 @@ const Form = () => {
             type="checkbox"
             id="canadian-bacon"
             name="canadian-bacon"
+            cy-data="canadian-bacon"
             onChange={handleChange}
           />
           Canadian Bacon

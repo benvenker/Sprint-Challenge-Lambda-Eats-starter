@@ -55,7 +55,7 @@ const Form = () => {
     schema.isValid(formState).then((valid) => {
       setButtonDisabled(!valid);
     });
-  }, [formState]);
+  }, [formState, schema]);
 
   const handleChange = (e) => {
     e.persist();
@@ -78,25 +78,18 @@ const Form = () => {
 
   const handleToppings = (e) => {
     e.persist();
-    const toppingsArr = formState.toppings;
-    console.log(e.target.checked);
-    if (e.target.checked && !formState.toppings.includes(e.target.name)) {
-      let newTopping = toppingsArr.push(e.target.name);
-      let toppingsUpdate = {
-        toppings: [...toppings, newTopping],
-      };
-      setFormState({ ...formState, toppingsUpdate });
-    } else if (
-      !e.target.checked &&
-      formState.toppings.includes(e.target.name)
-    ) {
-      let updatedToppings = {
-        toppings: formState.toppings.splice(
-          formState.toppings.indexOf(e.target.name),
-          1
-        ),
-      };
-      setFormState({ ...formState, updatedToppings });
+    const topping = e.target.name;
+    const toppings = formState.toppings;
+
+    // if the topping doesn't exist, add it
+    if (e.target.checked && !toppings.includes(topping)) {
+      toppings.push(topping);
+      setFormState({ ...formState });
+
+      // if it already exists/you unchecked it, remove it
+    } else if (!e.target.checked && toppings.includes(topping)) {
+      toppings.splice(toppings.indexOf(topping), 1);
+      setFormState({ ...formState });
     }
   };
 
@@ -106,13 +99,14 @@ const Form = () => {
       .post("https://reqres.in/api/users", formState)
       .then((response) => setPost([response.data]))
       .then(setFormState(initialState))
+      .then(document.getElementById("form").reset())
       .catch((err) => console.log(err.response));
   };
 
   return (
     <div className="form-container">
       <h1>Build Your Own Pizza</h1>
-      <form onSubmit={handleSubmit}>
+      <form id="form" onSubmit={handleSubmit}>
         <label htmlFor="name" id="name" name="name">
           <h2>Name</h2>
           <input

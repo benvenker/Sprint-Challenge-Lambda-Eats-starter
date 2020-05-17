@@ -8,15 +8,15 @@ import * as yup from "yup";
 import axios from "axios";
 
 const Form = () => {
-  const history = useHistory();
   const [toppings, setToppings] = useState([]);
   const initialState = {
     name: "",
     size: "medium",
-    sauce: "original-red",
     glutenFree: false,
-    toppings: toppings,
+    toppings: [],
     selectedSauce: "original-red",
+    quantity: 1,
+    "special-instructions": "",
   };
   const [errors, setErrors] = useState(initialState);
   const [formState, setFormState] = useState(initialState);
@@ -36,6 +36,7 @@ const Form = () => {
     size: yup.string().required(),
     selectedSauce: yup.string(),
     "special-instructions": yup.string(),
+    quantity: yup.number(),
   });
 
   const validateInput = (e) => {
@@ -52,16 +53,19 @@ const Form = () => {
 
   useEffect(() => {
     schema.isValid(formState).then((valid) => {
-      setButtonDisabled(valid);
+      setButtonDisabled(!valid);
     });
   }, [formState]);
 
   const handleChange = (e) => {
     e.persist();
+    let value =
+      e.target.type === "number"
+        ? (e.target.value = Number(e.target.value))
+        : e.target.value;
     const newFormState = {
       ...formState,
-      [e.target.name]:
-        e.target.type === "checkbox" ? e.target.checked : e.target.value,
+      [e.target.name]: e.target.type === "checkbox" ? e.target.checked : value,
     };
     validateInput(e);
     setFormState(newFormState);
@@ -74,12 +78,26 @@ const Form = () => {
 
   const handleToppings = (e) => {
     e.persist();
-    const topping = e.target.name;
-    const allToppings = {
-      toppings: [...toppings, topping],
-    };
-    setToppings([...toppings, topping]);
-    setFormState({ ...formState, ...allToppings });
+    const toppingsArr = formState.toppings;
+    console.log(e.target.checked);
+    if (e.target.checked && !formState.toppings.includes(e.target.name)) {
+      let newTopping = toppingsArr.push(e.target.name);
+      let toppingsUpdate = {
+        toppings: [...toppings, newTopping],
+      };
+      setFormState({ ...formState, toppingsUpdate });
+    } else if (
+      !e.target.checked &&
+      formState.toppings.includes(e.target.name)
+    ) {
+      let updatedToppings = {
+        toppings: formState.toppings.splice(
+          formState.toppings.indexOf(e.target.name),
+          1
+        ),
+      };
+      setFormState({ ...formState, updatedToppings });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -88,8 +106,7 @@ const Form = () => {
       .post("https://reqres.in/api/users", formState)
       .then((response) => setPost([response.data]))
       .then(setFormState(initialState))
-      // .then(history.push("/success"))
-      .catch((err) => console.log(err.respose));
+      .catch((err) => console.log(err.response));
   };
 
   return (
@@ -176,7 +193,7 @@ const Form = () => {
         </label>
         <div className="section-header">
           <h2>Add Toppings</h2>
-          <p>Choose up to n</p>
+          <p>Choose up to 5</p>
         </div>
         <label htmlFor="pepperoni">
           <input
@@ -236,7 +253,7 @@ const Form = () => {
             defaultChecked={formState.glutenFree}
             onChange={handleChange}
           />
-          <span>Gluten free crust</span>
+          <div className="glutenfree">Gluten free crust</div>
         </label>
         <h2>Special Instructions</h2>
         <textarea
@@ -251,10 +268,11 @@ const Form = () => {
             type="number"
             name="quantity"
             id="quantity"
+            value={formState.quantity}
             onChange={handleChange}
           />
         </div>
-        <button>PLace Your Order</button>
+        <button disabled={buttonDisabled}>PLace Your Order</button>
       </form>
       {
         // console.log("post.length: ", post.length)

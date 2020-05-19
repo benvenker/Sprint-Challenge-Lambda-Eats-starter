@@ -8,7 +8,6 @@ import * as yup from "yup";
 import axios from "axios";
 
 const Form = () => {
-  const [toppings, setToppings] = useState([]);
   const initialState = {
     name: "",
     size: "medium",
